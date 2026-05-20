@@ -157,4 +157,139 @@ $RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))
   });
 })();
 </script>
+<script>
+(function () {
+  var lang = 'es';
+
+  var labels = {
+    'Home':          { es: 'Inicio',       en: 'Home'        },
+    'About':         { es: 'Sobre mí',     en: 'About'       },
+    'Experience':    { es: 'Experiencia',  en: 'Experience'  },
+    'Projects':      { es: 'Proyectos',    en: 'Projects'    },
+    'Education':     { es: 'Educación',    en: 'Education'   },
+    'Skills':        { es: 'Habilidades',  en: 'Skills'      },
+    'Download CV':   { es: 'Descargar CV', en: 'Download CV' },
+    'Open to work':  { es: 'Disponible',   en: 'Open to work'  },
+    'Open To Work':  { es: 'Disponible',   en: 'Open To Work'  }
+  };
+
+  var aboutHtml = {
+    es: '<p>Ingeniero de Software enfocado en la transformación digital y la eficiencia operativa. Mi enfoque es resolver problemas de negocio mediante tecnología, no solo escribir código.</p><p>Como único responsable del desarrollo de software en una empresa de manufactura, lideré la transición de procesos manuales hacia ecosistemas digitales escalables: sistema de trazabilidad QR, control de inventario con lógica Kardex, dashboards de manufactura y arquitectura Full Stack con Next.js y PostgreSQL. Actualmente estudiante de Ingeniería en Computación en la UNAM.</p>',
+    en: '<p>Software Engineer focused on digital transformation and operational efficiency. I solve business problems through technology — not just write code.</p><p>As the sole software developer in a manufacturing company, I led the transition from manual processes to scalable digital ecosystems: QR traceability system, inventory control with Kardex logic, manufacturing dashboards, and Full Stack architecture with Next.js and PostgreSQL. Currently studying Computer Engineering at UNAM.</p>'
+  };
+
+  var expDesc = {
+    'Talla': {
+      es: 'Responsable de la transformación digital en una planta de fabricación de joyería fina. Diseñé e implementé un sistema de gestión de inventarios con trazabilidad QR (rastreo atómico desde producción hasta punto de venta). Migré la arquitectura de scripts básicos a Next.js, PostgreSQL y Prisma ORM. Implementé lógica Kardex para control de stock y dashboards de manufactura para toma de decisiones basada en datos.',
+      en: 'Responsible for digital transformation at a fine jewelry manufacturing plant. Designed and implemented an inventory management system with QR traceability (atomic tracking from production to point of sale). Migrated architecture from basic scripts to Next.js, PostgreSQL, and Prisma ORM. Implemented Kardex logic for stock control and manufacturing dashboards for data-driven decision making.'
+    },
+    'Autónomo': {
+      es: 'Proyectos de desarrollo frontend para clientes en distintos sectores. Diseño e implementación de interfaces con React y tecnologías web modernas.',
+      en: 'Frontend development projects for clients in various sectors. Design and implementation of interfaces using React and modern web technologies.'
+    },
+    'RappiCard': {
+      es: 'Resolución de incidencias financieras y lectura de estados de cuenta con alto volumen de llamadas. Coordinación con múltiples departamentos para escalar y cerrar casos complejos. Comunicación efectiva bajo presión con clientes en situaciones de conflicto.',
+      en: 'Resolution of financial incidents and account statement review with high call volume. Coordination with multiple departments to escalate and close complex cases. Effective communication under pressure with clients in conflict situations.'
+    }
+  };
+
+  var eduDesc = {
+    'UNAM': {
+      es: 'Ingeniería en Computación',
+      en: 'Computer Engineering'
+    },
+    'Platzi': {
+      es: 'Programación informática y aplicaciones específicas',
+      en: 'Computer Programming and Specific Applications'
+    },
+    'Ingenia': {
+      es: 'Certificación en Robótica',
+      en: 'Robotics Certification'
+    }
+  };
+
+  var refs = [];
+  var aboutEl = null;
+  var expEls = {};
+  var eduEls = {};
+
+  function buildRefs() {
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    var n;
+    while ((n = walker.nextNode())) {
+      var t = n.textContent.trim();
+      if (labels[t]) refs.push({node: n, key: t});
+    }
+
+    var h2a = document.getElementById('about');
+    if (h2a) {
+      var sec = h2a.closest('section') || h2a.parentElement;
+      if (sec) aboutEl = sec.querySelector('[class*="prose"]');
+    }
+
+    document.querySelectorAll('p').forEach(function (el) {
+      var txt = el.textContent.trim();
+      Object.keys(expDesc).forEach(function (k) {
+        if (!expEls[k] && txt.indexOf(expDesc[k].es.substring(0, 20)) === 0) expEls[k] = el;
+      });
+    });
+
+    document.querySelectorAll('p, span').forEach(function (el) {
+      var txt = el.textContent.trim();
+      Object.keys(eduDesc).forEach(function (k) {
+        if (!eduEls[k] && txt === eduDesc[k].es) eduEls[k] = el;
+      });
+    });
+  }
+
+  function applyLang(l) {
+    lang = l;
+    document.documentElement.lang = l;
+
+    refs.forEach(function (r) {
+      var target = labels[r.key][l];
+      if (r.node.textContent !== target) r.node.textContent = target;
+    });
+
+    if (aboutEl) aboutEl.innerHTML = aboutHtml[l];
+
+    Object.keys(expEls).forEach(function (k) {
+      if (expEls[k]) expEls[k].textContent = expDesc[k][l];
+    });
+
+    Object.keys(eduEls).forEach(function (k) {
+      if (eduEls[k]) eduEls[k].textContent = eduDesc[k][l];
+    });
+
+    var btn = document.getElementById('lang-btn');
+    if (btn) {
+      btn.innerHTML = l === 'es' ? '🇺🇸' : '🇲🇽';
+      btn.title = l === 'es' ? 'Switch to English' : 'Cambiar a Español';
+    }
+
+    try { localStorage.setItem('portfolio-lang', l); } catch(e) {}
+  }
+
+  function init() {
+    var saved = 'es';
+    try { saved = localStorage.getItem('portfolio-lang') || 'es'; } catch(e) {}
+
+    buildRefs();
+
+    var btn = document.createElement('button');
+    btn.id = 'lang-btn';
+    btn.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;font-size:1.5rem;background:rgba(20,8,2,0.85);border:1px solid rgba(212,175,55,0.5);border-radius:50%;width:48px;height:48px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.5);transition:transform 0.15s,border-color 0.15s;outline:none;';
+    btn.innerHTML = saved === 'es' ? '🇺🇸' : '🇲🇽';
+    btn.title = saved === 'es' ? 'Switch to English' : 'Cambiar a Español';
+    btn.addEventListener('mouseover', function () { this.style.transform = 'scale(1.15)'; this.style.borderColor = 'rgba(212,175,55,0.9)'; });
+    btn.addEventListener('mouseout', function () { this.style.transform = ''; this.style.borderColor = 'rgba(212,175,55,0.5)'; });
+    btn.addEventListener('click', function () { applyLang(lang === 'es' ? 'en' : 'es'); });
+    document.body.appendChild(btn);
+
+    applyLang(saved);
+  }
+
+  setTimeout(init, 1200);
+})();
+</script>
 </body></html>

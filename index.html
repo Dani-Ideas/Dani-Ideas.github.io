@@ -106,15 +106,13 @@ $RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))
 
   var globe = new ENCOM.Globe(window.innerWidth, window.innerHeight, {
     tiles: grid.tiles,
-    baseColor: '#D4AF37',
-    markerColor: '#D4AF37',
-    pinColor: '#4796E3',
-    introLinesColor: '#9177C7',
-    mapUrl: 'assets/equirectangle_projection.png',
-    scale: 0.75,
-    dayLength: 50000,
-    viewAngle: 0.3,
-    introLinesDuration: 3000
+    baseColor: '#c6c7f5',
+    scale: 1.0,
+    viewAngle: 0.210,
+    dayLength: 28000,
+    introLinesDuration: 5000,
+    maxPins: 120,
+    maxMarkers: 2
   });
   container.appendChild(globe.domElement);
   globe.init(function() {

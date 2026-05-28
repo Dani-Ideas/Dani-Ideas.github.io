@@ -1,0 +1,27 @@
+---
+import { person } from '../data/portfolio';
+import SocialLinks from './SocialLinks.astro';
+---
+<div class="mt-14 px-4 pt-8 pb-6">
+  <h1 class="text-3xl font-bold text-[var(--color-text-primary)]">{person.name}</h1>
+  <h2 class="text-base font-medium text-[var(--color-accent)] mt-1"
+      data-es={person.role.es} data-en={person.role.en}>
+    {person.role.es}
+  </h2>
+
+  {person.openToWork && (
+    <div class="flex items-center gap-2 mt-2">
+      <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 text-xs font-medium">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+        </span>
+        <span data-es="Disponible" data-en="Open to work">Disponible</span>
+      </span>
+    </div>
+  )}
+
+  <div class="mt-3">
+    <SocialLinks />
+  </div>
+</div>

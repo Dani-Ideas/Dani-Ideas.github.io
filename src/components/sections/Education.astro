@@ -1,0 +1,24 @@
+---
+import { education } from '../../data/portfolio';
+---
+<section data-section="education" id="education" class="glass-panel scroll-mt-24">
+  <div class="mb-5">
+    <h2 class="text-2xl font-semibold text-[var(--color-text-primary)]"
+        data-es="Educación" data-en="Education">Educación</h2>
+    <div class="w-10 h-0.5 bg-[var(--color-accent)] rounded-full mt-2"></div>
+  </div>
+  <div class="flex flex-col gap-3">
+    {education.map(item => (
+      <div class="flex items-start justify-between gap-3 p-4 rounded-lg border border-[var(--color-border)] bg-black/25 hover:border-[var(--color-border-hover)] transition-all duration-300 hover:-translate-y-0.5">
+        <div>
+          <p class="font-semibold text-[var(--color-text-primary)] text-sm">{item.institution}</p>
+          <p class="text-[var(--color-text-secondary)] text-xs mt-0.5"
+             data-es={item.degree.es} data-en={item.degree.en}>
+            {item.degree.es}
+          </p>
+        </div>
+        <span class="text-xs text-[var(--color-text-secondary)] opacity-70 shrink-0">{item.period}</span>
+      </div>
+    ))}
+  </div>
+</section>

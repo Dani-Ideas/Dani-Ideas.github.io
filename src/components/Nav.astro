@@ -1,0 +1,16 @@
+---
+import { nav } from '../data/portfolio';
+---
+<!-- Mobile top nav -->
+<nav class="glass-nav fixed top-0 z-50 w-full lg:hidden">
+  <div class="flex h-14 items-center justify-center gap-4 px-4">
+    {nav.map(item => (
+      <a href={item.href}
+         class="text-xs font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors"
+         data-es={item.label.es}
+         data-en={item.label.en}>
+        {item.label.es}
+      </a>
+    ))}
+  </div>
+</nav>

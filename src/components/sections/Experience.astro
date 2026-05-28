@@ -1,0 +1,47 @@
+---
+import { experience } from '../../data/portfolio';
+---
+<section data-section="experience" id="experience" class="glass-panel scroll-mt-24">
+  <div class="mb-5">
+    <h2 class="text-2xl font-semibold text-[var(--color-text-primary)]"
+        data-es="Experiencia" data-en="Experience">Experiencia</h2>
+    <div class="w-10 h-0.5 bg-[var(--color-accent)] rounded-full mt-2"></div>
+  </div>
+  <div class="flex flex-col gap-4">
+    {experience.map(item => (
+      <div class="group rounded-lg p-4 border border-[var(--color-border)] hover:border-[var(--color-border-hover)] bg-black/30 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex-1">
+            <h3 class="font-semibold text-[var(--color-text-primary)] text-sm leading-snug"
+                data-es={item.role.es} data-en={item.role.en}>
+              {item.role.es}
+            </h3>
+            <div class="flex items-center gap-2 mt-1 flex-wrap">
+              {item.companyUrl ? (
+                <a href={item.companyUrl} target="_blank" rel="noopener noreferrer"
+                   class="text-[var(--color-accent)] text-xs font-medium hover:underline">
+                  {item.company}
+                </a>
+              ) : (
+                <span class="text-[var(--color-accent)] text-xs font-medium">{item.company}</span>
+              )}
+              <span class="text-[var(--color-text-secondary)] text-xs opacity-50">·</span>
+              <span class="text-[var(--color-text-secondary)] text-xs"
+                    data-es={item.place.es} data-en={item.place.en}>
+                {item.place.es}
+              </span>
+            </div>
+          </div>
+          <span class="text-xs text-[var(--color-text-secondary)] opacity-70 shrink-0 mt-0.5"
+                data-es={item.period.es} data-en={item.period.en}>
+            {item.period.es}
+          </span>
+        </div>
+        <p class="mt-3 text-sm text-[var(--color-text-secondary)] leading-relaxed"
+           data-es={item.description.es} data-en={item.description.en}>
+          {item.description.es}
+        </p>
+      </div>
+    ))}
+  </div>
+</section>

@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Work Sans — self-hosted, no Google Fonts CDN */
+@font-face { font-family:'Work Sans'; src:url('/fonts/work-sans/WorkSans-Light.ttf') format('truetype'); font-weight:300; font-display:swap; }
+@font-face { font-family:'Work Sans'; src:url('/fonts/work-sans/WorkSans-Regular.ttf') format('truetype'); font-weight:400; font-display:swap; }
+@font-face { font-family:'Work Sans'; src:url('/fonts/work-sans/WorkSans-Medium.ttf') format('truetype'); font-weight:500; font-display:swap; }
+@font-face { font-family:'Work Sans'; src:url('/fonts/work-sans/WorkSans-SemiBold.ttf') format('truetype'); font-weight:600; font-display:swap; }
+@font-face { font-family:'Work Sans'; src:url('/fonts/work-sans/WorkSans-Bold.ttf') format('truetype'); font-weight:700; font-display:swap; }
+
+:root {
+  --color-accent:        #D4AF37;
+  --color-text-primary:  #ffffff;
+  --color-text-secondary:#d1d5db;
+  --color-card-bg:       rgba(0, 0, 0, 0.50);
+  --color-nav-bg:        rgba(0, 0, 0, 0.72);
+  --color-border:        rgba(255, 255, 255, 0.09);
+  --color-border-hover:  rgba(212, 175, 55, 0.35);
+  --color-hover-bg:      rgba(255, 255, 255, 0.05);
+  --font-sans:           'Work Sans', system-ui, sans-serif;
+}
+
+html {
+  background: #210F04;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  height: 100%;
+  letter-spacing: 0.01em;
+}
+body {
+  background: transparent;
+}
+
+/* Desktop: overflow hidden on body so only the right column scrolls */
+@media (min-width: 1024px) {
+  body { overflow: hidden; }
+}
+
+/* Scrollbar hiding */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Frosted glass */
+.glass-nav {
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  background: var(--color-nav-bg);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.22);
+}
+.glass-panel {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+/* Section fade-up — starts hidden, JS adds .visible */
+[data-section] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+[data-section].visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Lang toggle rotate animation */
+#lang-btn.spinning {
+  animation: spin-once 0.35s ease forwards;
+}
+@keyframes spin-once {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Nav indicator line */
+.nav-indicator {
+  display: inline-block;
+  width: 2rem;
+  height: 1px;
+  background: var(--color-text-secondary);
+  margin-right: 0.75rem;
+  transition: width 0.25s ease, background 0.25s ease;
+  vertical-align: middle;
+}
+.nav-link:hover .nav-indicator,
+.nav-link.active .nav-indicator {
+  width: 4rem;
+  background: var(--color-accent);
+}
+.nav-link:hover,
+.nav-link.active {
+  color: var(--color-text-primary);
+}
+
+/* Skill pill hover */
+.skill-pill {
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.skill-pill:hover {
+  transform: scale(1.06);
+  border-color: rgba(212, 175, 55, 0.5);
+}

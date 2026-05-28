@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import GlobeBackground from '../components/GlobeBackground.astro';
+import Nav from '../components/Nav.astro';
+import MobileHero from '../components/MobileHero.astro';
+import LeftColumn from '../components/LeftColumn.astro';
+import RightColumn from '../components/RightColumn.astro';
+import About from '../components/sections/About.astro';
+import Experience from '../components/sections/Experience.astro';
+import Projects from '../components/sections/Projects.astro';
+import Education from '../components/sections/Education.astro';
+import Skills from '../components/sections/Skills.astro';
+---
+<Base>
+  <GlobeBackground />
+
+  <!-- Mobile layout -->
+  <div class="lg:hidden min-h-screen">
+    <Nav />
+    <MobileHero />
+    <main class="px-4 pb-24 space-y-6">
+      <About />
+      <Experience />
+      <Projects />
+      <Education />
+      <Skills />
+    </main>
+  </div>
+
+  <!-- Desktop layout: split screen -->
+  <div class="hidden lg:flex w-full h-screen overflow-hidden">
+    <div class="w-full max-w-screen-xl mx-auto px-12 flex justify-between gap-8 h-full">
+      <LeftColumn />
+      <RightColumn />
+    </div>
+  </div>
+</Base>

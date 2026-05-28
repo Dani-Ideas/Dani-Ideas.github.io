@@ -1,0 +1,17 @@
+---
+import { skills } from '../../data/portfolio';
+---
+<section data-section="skills" id="skills" class="glass-panel scroll-mt-24">
+  <div class="mb-5">
+    <h2 class="text-2xl font-semibold text-[var(--color-text-primary)]"
+        data-es="Habilidades" data-en="Skills">Habilidades</h2>
+    <div class="w-10 h-0.5 bg-[var(--color-accent)] rounded-full mt-2"></div>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    {skills.map(skill => (
+      <span class="skill-pill text-sm px-3 py-1.5 rounded-full border border-[var(--color-border)] bg-white/5 text-[var(--color-text-secondary)] font-medium">
+        {skill}
+      </span>
+    ))}
+  </div>
+</section>

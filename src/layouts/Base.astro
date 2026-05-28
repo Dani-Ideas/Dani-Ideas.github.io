@@ -1,0 +1,70 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = 'Daniel Romero — Fullstack Developer',
+  description = 'Portfolio de Daniel Romero — Fullstack Developer especializado en Next.js, TypeScript y PostgreSQL. Autor de un sistema ERP/POS en producción con Stripe, NextAuth y Supabase.',
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="es">
+<head>
+  <!-- Analytics blocker — must be first, before any fetch/XHR -->
+  <script is:inline>
+  (function () {
+    var B = ['posthog.com', 'posthog.io', 'sentry.io', '/api/analytics', '/api/github'];
+    function blocked(u) { var s = String(u || ''); return B.some(function (b) { return s.indexOf(b) !== -1; }); }
+    var _f = window.fetch;
+    window.fetch = function (u, o) {
+      return blocked(u) ? Promise.resolve(new Response('{}', {status: 200, headers: {'Content-Type': 'application/json'}})) : _f.apply(this, arguments);
+    };
+    var _open = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (m, u) { if (blocked(u)) { this._b = true; return; } return _open.apply(this, arguments); };
+    var _send = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.send = function () { if (this._b) return; return _send.apply(this, arguments); };
+  })();
+  </script>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#D4AF37" />
+  <meta name="color-scheme" content="dark" />
+
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:site_name" content="Daniel Romero Portfolio" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/favicon.ico" />
+
+</head>
+<body>
+  <slot />
+
+  <!-- Globe scripts — load order is critical: grid → encom-globe → init -->
+  <script is:inline src="/assets/grid.js"></script>
+  <script is:inline src="/assets/encom-globe.min.js"></script>
+  <script is:inline src="/scripts/globe.js"></script>
+  <script is:inline src="/scripts/lang-toggle.js"></script>
+  <script is:inline src="/scripts/scroll-animations.js"></script>
+</body>
+</html>

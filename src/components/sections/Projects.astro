@@ -1,0 +1,64 @@
+---
+import { projects } from '../../data/portfolio';
+---
+<section data-section="projects" id="projects" class="glass-panel scroll-mt-24">
+  <div class="mb-5">
+    <h2 class="text-2xl font-semibold text-[var(--color-text-primary)]"
+        data-es="Proyectos" data-en="Projects">Proyectos</h2>
+    <div class="w-10 h-0.5 bg-[var(--color-accent)] rounded-full mt-2"></div>
+  </div>
+  <div class="flex flex-col gap-5">
+    {projects.map(project => (
+      <div class="group rounded-xl border border-[var(--color-border)] hover:border-[var(--color-border-hover)] bg-black/40 overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl">
+        <div class="p-5">
+          <!-- Header -->
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <h3 class="text-lg font-bold text-[var(--color-text-primary)]"
+                data-es={project.name.es} data-en={project.name.en}>
+              {project.name.es}
+            </h3>
+            {project.status === 'live' && (
+              <span class="flex items-center gap-1.5 text-xs font-medium text-[var(--color-text-secondary)] px-2 py-1 bg-white/5 rounded-full shrink-0">
+                <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                Live
+              </span>
+            )}
+          </div>
+
+          <!-- Description -->
+          <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-4"
+             data-es={project.description.es} data-en={project.description.en}>
+            {project.description.es}
+          </p>
+
+          <!-- Tech pills -->
+          <div class="flex flex-wrap gap-2 mb-4">
+            {project.technologies.map(tech => (
+              <span class="skill-pill text-xs px-2 py-1 bg-white/5 text-[var(--color-text-secondary)] rounded border border-[var(--color-border)]">
+                {tech}
+              </span>
+            ))}
+          </div>
+
+          <!-- CTA buttons -->
+          <div class="flex gap-4 pt-3 border-t border-[var(--color-border)]">
+            <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
+               class="flex items-center gap-1.5 text-sm font-medium text-[var(--color-accent)] hover:underline">
+              <svg width="15" height="15" viewBox="0 0 256 256" fill="currentColor">
+                <path d="M128,26A102,102,0,1,0,230,128,102.12,102.12,0,0,0,128,26Zm0,192a90,90,0,1,1,90-90A90.1,90.1,0,0,1,128,218Zm58-90a58,58,0,0,1-58,58,6,6,0,0,1,0-12,46.05,46.05,0,0,0,46-46,6,6,0,0,1,12,0ZM76,128a52.06,52.06,0,0,1,52-52,6,6,0,0,1,0,12,40,40,0,0,0-40,40,6,6,0,0,1-12,0Z"/>
+              </svg>
+              <span data-es="Ver proyecto" data-en="Live demo">Ver proyecto</span>
+            </a>
+            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
+               class="flex items-center gap-1.5 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
+              <svg width="15" height="15" viewBox="0 0 256 256" fill="currentColor">
+                <path d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24A40,40,0,0,0,8,136a8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68Z"/>
+              </svg>
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>

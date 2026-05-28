@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://portfolio.dani-ideas.dev/sitemap-index.xml

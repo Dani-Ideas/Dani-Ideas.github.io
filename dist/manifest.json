@@ -1,0 +1,10 @@
+{
+  "name": "Daniel Romero — Fullstack Developer",
+  "short_name": "Daniel Romero",
+  "description": "Portfolio de Daniel Romero, desarrollador Fullstack especializado en Next.js, TypeScript y PostgreSQL.",
+  "display": "standalone",
+  "start_url": "/",
+  "background_color": "#210F04",
+  "theme_color": "#D4AF37",
+  "icons": []
+}

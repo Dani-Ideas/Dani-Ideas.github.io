@@ -105,6 +105,7 @@ export interface ProjectItem {
   name: BilingualText;
   liveUrl: string;
   githubUrl: string;
+  demoUrl?: string;
   description: BilingualText;
   longDescription: BilingualText;
   technologies: string[];
@@ -117,6 +118,7 @@ export const projects: ProjectItem[] = [
     name: { es: 'Sistema ERP / POS', en: 'ERP / POS System' },
     liveUrl: 'https://manager-master-hol0gw9pp-dani-ideas-projects.vercel.app/',
     githubUrl: 'https://github.com/Dani-Ideas',
+    demoUrl: '/pos-demo/',
     description: {
       es: 'Sistema completo de punto de venta e inventario en producción. Módulo SGI con Kardex (StockMove), lotes y ubicaciones jerárquicas. Integración con Stripe y Mercado Pago (pago dividido en POS). NextAuth v5, control de sesiones de caja y auditoría completa.',
       en: 'Complete point of sale and inventory system in production. SGI module with Kardex (StockMove), lots and hierarchical locations. Integration with Stripe and Mercado Pago (split payment in POS). NextAuth v5, cashier session control and full audit trail.',
@@ -126,6 +128,23 @@ export const projects: ProjectItem[] = [
       en: 'Fullstack ERP and point of sale: inventory with Kardex, lots and hierarchical locations, POS with split payment, Stripe + Mercado Pago. Continuous deploy on Vercel + Supabase.',
     },
     technologies: ['Next.js 16', 'TypeScript', 'PostgreSQL', 'Prisma ORM', 'NextAuth v5', 'Zustand', 'Tailwind CSS', 'Stripe', 'Supabase', 'SheetJS', 'Vercel'],
+    status: 'live',
+    date: '2025',
+  },
+  {
+    name: { es: 'Sistema de Inventario (SGI)', en: 'Inventory System (SGI)' },
+    liveUrl: '',
+    githubUrl: 'https://github.com/Dani-Ideas',
+    demoUrl: '/sgi-demo/',
+    description: {
+      es: 'Módulo de gestión de inventario con Kardex (StockMove), lotes y ubicaciones jerárquicas. Exportación a Excel. Demo interactiva con datos precargados — sin backend.',
+      en: 'Inventory management module with Kardex (StockMove), lots and hierarchical locations. Excel export. Interactive demo with preloaded data — no backend.',
+    },
+    longDescription: {
+      es: 'SGI demo: Kardex con búsqueda y exportación XLSX, recepciones, traslados entre almacenes, visualización de rutas INPUT→QC→STOCK. Zustand + localStorage (persiste entre recargas).',
+      en: 'SGI demo: Kardex with search and XLSX export, receipts, warehouse transfers, route visualization INPUT→QC→STOCK. Zustand + localStorage (persists across reloads).',
+    },
+    technologies: ['React 19', 'TypeScript', 'Zustand', 'Tailwind CSS v4', 'shadcn/ui', 'Vite', 'xlsx'],
     status: 'live',
     date: '2025',
   },

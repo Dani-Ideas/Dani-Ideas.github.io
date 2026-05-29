@@ -7,8 +7,14 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
+/pos-demo/*
+  X-Frame-Options: SAMEORIGIN
+
 /pos-demo/assets/*
   Cache-Control: public, max-age=31536000, immutable
+
+/sgi-demo/*
+  X-Frame-Options: SAMEORIGIN
 
 /sgi-demo/assets/*
   Cache-Control: public, max-age=31536000, immutable

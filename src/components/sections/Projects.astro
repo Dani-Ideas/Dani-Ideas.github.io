@@ -42,13 +42,26 @@ import { projects } from '../../data/portfolio';
 
           <!-- CTA buttons -->
           <div class="flex gap-4 pt-3 border-t border-[var(--color-border)]">
-            <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
-               class="flex items-center gap-1.5 text-sm font-medium text-[var(--color-accent)] hover:underline">
-              <svg width="15" height="15" viewBox="0 0 256 256" fill="currentColor">
-                <path d="M128,26A102,102,0,1,0,230,128,102.12,102.12,0,0,0,128,26Zm0,192a90,90,0,1,1,90-90A90.1,90.1,0,0,1,128,218Zm58-90a58,58,0,0,1-58,58,6,6,0,0,1,0-12,46.05,46.05,0,0,0,46-46,6,6,0,0,1,12,0ZM76,128a52.06,52.06,0,0,1,52-52,6,6,0,0,1,0,12,40,40,0,0,0-40,40,6,6,0,0,1-12,0Z"/>
-              </svg>
-              <span data-es="Ver proyecto" data-en="Live demo">Ver proyecto</span>
-            </a>
+            {project.demoUrl && (
+              <a href={project.demoUrl}
+                 class="flex items-center gap-1.5 text-sm font-medium text-[var(--color-accent)] hover:underline">
+                <svg width="15" height="15" viewBox="0 0 256 256" fill="currentColor">
+                  <path d="M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-16.2.3A15.86,15.86,0,0,1,64,216.13V39.87a15.86,15.86,0,0,1,8.12-13.82,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z"/>
+                </svg>
+                <span data-es="Ver demo" data-en="Live demo">Ver demo</span>
+              </a>
+            )}
+            {project.liveUrl && (
+              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
+                 class="flex items-center gap-1.5 text-sm font-medium text-[var(--color-accent)] hover:underline">
+                <svg width="15" height="15" viewBox="0 0 256 256" fill="currentColor">
+                  <path d="M128,26A102,102,0,1,0,230,128,102.12,102.12,0,0,0,128,26Zm0,192a90,90,0,1,1,90-90A90.1,90.1,0,0,1,128,218Zm58-90a58,58,0,0,1-58,58,6,6,0,0,1,0-12,46.05,46.05,0,0,0,46-46,6,6,0,0,1,12,0ZM76,128a52.06,52.06,0,0,1,52-52,6,6,0,0,1,0,12,40,40,0,0,0-40,40,6,6,0,0,1-12,0Z"/>
+                </svg>
+                <span data-es={project.demoUrl ? 'Producción' : 'Ver proyecto'} data-en={project.demoUrl ? 'Production' : 'Live project'}>
+                  {project.demoUrl ? 'Producción' : 'Ver proyecto'}
+                </span>
+              </a>
+            )}
             <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
                class="flex items-center gap-1.5 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
               <svg width="15" height="15" viewBox="0 0 256 256" fill="currentColor">

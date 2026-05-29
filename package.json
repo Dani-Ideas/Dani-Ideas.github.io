@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "build:pos-demo": "cd pos-demo && npm install && npm run build",
+    "build:all": "npm run build:pos-demo && cp -r pos-demo/dist/. public/pos-demo/ && npm run build"
   },
   "devDependencies": {
     "astro": "^4.16.0",

@@ -8,7 +8,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "build:pos-demo": "cd pos-demo && npm install && npm run build",
-    "build:all": "npm run build:pos-demo && cp -r pos-demo/dist/. public/pos-demo/ && npm run build"
+    "build:sgi-demo": "cd sgi-demo && npm install && npm run build",
+    "build:all": "npm run build:pos-demo && npm run build:sgi-demo && cp -r pos-demo/dist/. public/pos-demo/ && cp -r sgi-demo/dist/. public/sgi-demo/ && npm run build"
   },
   "devDependencies": {
     "astro": "^4.16.0",

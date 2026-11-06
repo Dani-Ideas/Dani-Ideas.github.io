@@ -148,6 +148,23 @@ export const projects: ProjectItem[] = [
     status: 'live',
     date: '2025',
   },
+  {
+    name: { es: 'Geo-lock — Autenticación geoespacial', en: 'Geo-lock — Geospatial Authentication' },
+    liveUrl: '',
+    githubUrl: 'https://github.com/Dani-Ideas',
+    demoUrl: '/geo-lock/',
+    description: {
+      es: 'Prueba de concepto de un método de desbloqueo sin contraseña: la clave son 6 lugares elegidos en orden sobre un globo de partículas. Tolerancia configurable en kilómetros, registro con confirmación y métricas de cada intento.',
+      en: 'Proof of concept for a passwordless unlock method: the key is 6 places picked in order on a particle globe. Configurable tolerance in kilometres, enrollment with confirmation, and metrics for every attempt.',
+    },
+    longDescription: {
+      es: 'Interfaz de login geoespacial sobre WebGL: 15.178 partículas renderizadas con shaders propios (RawShaderMaterial), raycasting sobre la esfera para convertir el clic en latitud/longitud y comparación de la secuencia dentro de una tolerancia ajustable. Es una exploración de usabilidad: la secuencia se guarda en localStorage en coordenadas planas, por lo que no pretende ser segura.',
+      en: 'Geospatial login interface on WebGL: 15,178 particles rendered with custom shaders (RawShaderMaterial), raycasting against the sphere to turn a click into latitude/longitude, and sequence matching within an adjustable tolerance. It is a usability exploration: the sequence is stored in localStorage as plain coordinates, so it is not meant to be secure.',
+    },
+    technologies: ['JavaScript', 'WebGL', 'Three.js', 'GLSL', 'Canvas', 'localStorage'],
+    status: 'wip',
+    date: '2025',
+  },
 ];
 
 export const nav = [

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Encom Globe · Geo-lock</title>
+    <!--
+        Proof of concept: a "password" made of 6 places picked on the particle
+        globe, in order. SET NEW SEQUENCE records them (twice, to confirm),
+        UNLOCK checks a new entry against them: every point has to fall within
+        the tolerance of the saved one, in the same order.
+
+        Only a test of how comfortable the idea is. The sequence is kept in
+        this browser's localStorage in plain coordinates, so it protects
+        nothing. A real unlock method would store something like a hash of
+        snapped cells and run inside the lock screen, not a web page.
+    -->
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; background: #000; overflow: hidden; }
+        body { font-family: Inconsolata, monospace; color: #fff; }
+        canvas { display: block; cursor: crosshair; touch-action: none; }
+        canvas.dragging { cursor: grabbing; }
+
+        #panel {
+            position: fixed; top: 24px; left: 24px; width: 430px;
+            border: 2px solid #6fc0ba; border-radius: 2px; padding: 3px;
+            background: rgba(0, 0, 0, 0.72);
+        }
+        #panel .content { border: 1px solid #1b2f2d; }
+        #panel h2 {
+            font-size: 14px; font-weight: bold; padding: 4px 6px;
+            border-bottom: 1px solid #1b2f2d;
+        }
+        #panel h2 em { font-style: normal; float: right; font-size: 11px; padding-top: 2px; color: #00eeee; }
+        .alt-1 { color: #00eeee; }
+        .body { padding: 8px 10px 10px; }
+
+        #slots { display: flex; gap: 8px; margin: 4px 0 10px; }
+        .slot {
+            width: 34px; height: 34px; border: 1px solid #1b2f2d; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            color: #1b2f2d; font-size: 14px;
+        }
+        .slot.filled { border-color: #ffcc00; color: #ffcc00; }
+        .slot.next { border-color: #00eeee; color: #00eeee; animation: blink 1s steps(2, start) infinite; }
+        @keyframes blink { to { border-color: #1b2f2d; } }
+
+        #terminal {
+            height: 170px; overflow: hidden; font-size: 12px; line-height: 17px;
+            border-top: 1px dashed #fff; padding-top: 6px; margin-bottom: 10px;
+            display: flex; flex-direction: column; justify-content: flex-end;
+        }
+        #terminal .denied { color: #e31b1b; }
+        #terminal .granted { color: #ffcc00; }
+        #terminal .dim { color: #6fc0ba; }
+
+        .buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+        .button {
+            border: 1px solid #6fc0ba; border-radius: 2px; color: #00eeee;
+            padding: 4px 10px; font-size: 12px; letter-spacing: 1px; cursor: pointer; user-select: none;
+        }
+        .button:hover { background: #feb400; border-color: #feb400; color: #000; }
+        .button.active { background: #00eeee; border-color: #00eeee; color: #000; }
+
+        .options { font-size: 11px; color: #6fc0ba; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+        .options label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .options input[type=range] { width: 100%; accent-color: #00eeee; }
+        .options .wide { grid-column: 1 / 3; }
+
+        .hint {
+            position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+            color: #8FD8D8; font: 13px monospace; letter-spacing: 0.1em; opacity: 0.7;
+            pointer-events: none; white-space: nowrap;
+        }
+
+        /* Discreet way back to the portfolio (added for the portfolio build). */
+        #back-link {
+            position: fixed; top: 24px; right: 24px; z-index: 10;
+            color: #6fc0ba; font: 12px monospace; letter-spacing: 0.1em;
+            text-decoration: none; border: 1px solid #1b2f2d; border-radius: 2px;
+            padding: 5px 10px; background: rgba(0, 0, 0, 0.72);
+        }
+        #back-link:hover { color: #00eeee; border-color: #6fc0ba; }
+
+        /* The panel is a fixed 430px; keep it on screen on a phone. */
+        @media (max-width: 520px) {
+            #panel { width: auto; left: 12px; right: 12px; top: 64px; }
+            #back-link { top: 12px; right: 12px; }
+            .hint { font-size: 11px; white-space: normal; width: 90%; text-align: center; }
+        }
+    </style>
+    <!-- Shared with the portfolio background: no extra payload for this demo. -->
+    <script src="/assets/grid-particles.js"></script>
+    <script src="/assets/encom-particle-globe.min.js"></script>
+</head>
+<body>
+
+<div id="panel">
+    <div class="content">
+        <h2>DANI-IDEAS OS12 ... GEO-LOCK <span class="alt-1">.SEQUENCE</span><em>PROOF OF CONCEPT</em></h2>
+        <div class="body">
+            <div id="slots"></div>
+            <div id="terminal"></div>
+            <div class="buttons">
+                <div class="button" id="btn-unlock">UNLOCK</div>
+                <div class="button" id="btn-setup">SET NEW SEQUENCE</div>
+                <div class="button" id="btn-undo">UNDO</div>
+                <div class="button" id="btn-clear">CLEAR</div>
+            </div>
+            <div class="options">
+                <label class="wide">TOLERANCE <span id="tol-value"></span>
+                    <input type="range" id="tolerance" min="2" max="20" step="1" value="8"></label>
+                <label><input type="checkbox" id="opt-labels" checked> SHOW NUMBERS</label>
+                <label><input type="checkbox" id="opt-rotate"> AUTO-ROTATE</label>
+                <label><input type="checkbox" id="opt-stats" checked> SHOW STATS</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a id="back-link" href="/">&larr; PORTFOLIO</a>
+
+<div class="hint">CLIC = ELEGIR LUGAR · ARRASTRA PARA GIRAR · BACKSPACE = DESHACER · ESC = BORRAR</div>
+
+<script>
+    var LENGTH = 6,
+        STORE_KEY = "encom-geolock",
+        KM_PER_DEGREE = 111.2;
+
+    var globe = new ENCOM.ParticleGlobe(window.innerWidth, window.innerHeight, {
+        tiles: grid.tiles,
+        baseColor: "#c6c7f5",
+        introDuration: 3000,
+        startLongitude: -90,
+        tilt: 0.2,
+        dayLength: 1e12,      // still by default (AUTO-ROTATE turns it on)
+        hoverPull: 0,         // no gravity well: it would move the places under the cursor
+        hoverTurbulence: 4,
+        maxPins: LENGTH
+    });
+    document.body.appendChild(globe.domElement);
+
+    /* state */
+
+    var mode = "unlock",          // "unlock" | "setup" | "confirm"
+        entry = [],               // points picked in this attempt: {lat, lon, t}
+        firstSetup = null,        // setup's first entry, waiting for its confirmation
+        attempts = 0,
+        startedAt = null;
+
+    function saved(){
+        try {
+            return JSON.parse(localStorage.getItem(STORE_KEY));
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function save(points){
+        try {
+            localStorage.setItem(STORE_KEY, JSON.stringify({ points: points }));
+        } catch (e) {}
+    }
+
+    function tolerance(){
+        return parseFloat(document.getElementById("tolerance").value);
+    }
+
+    /* geometry */
+
+    function toRad(d){ return d * Math.PI / 180; }
+
+    // great-circle angle between two places, in degrees
+    function angle(a, b){
+        var dLat = toRad(b.lat - a.lat),
+            dLon = toRad(b.lon - a.lon),
+            h = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        return 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h)) * 180 / Math.PI;
+    }
+
+    // middle point of two places (for the confirmed setup)
+    function midpoint(a, b){
+        var la = toRad(a.lat), lb = toRad(b.lat), dLon = toRad(b.lon - a.lon),
+            bx = Math.cos(lb) * Math.cos(dLon), by = Math.cos(lb) * Math.sin(dLon),
+            lat = Math.atan2(Math.sin(la) + Math.sin(lb), Math.sqrt((Math.cos(la) + bx) * (Math.cos(la) + bx) + by * by)),
+            lon = toRad(a.lon) + Math.atan2(by, Math.cos(la) + bx);
+        return { lat: lat * 180 / Math.PI, lon: ((lon * 180 / Math.PI + 540) % 360) - 180 };
+    }
+
+    /* output */
+
+    var terminal = document.getElementById("terminal");
+
+    function write(text, cls){
+        var line = document.createElement("div");
+        line.textContent = text;
+        if (cls) {
+            line.className = cls;
+        }
+        terminal.appendChild(line);
+        while (terminal.children.length > 10) {
+            terminal.removeChild(terminal.firstChild);
+        }
+    }
+
+    function renderSlots(){
+        var slots = document.getElementById("slots");
+        slots.innerHTML = "";
+        for (var i = 0; i < LENGTH; i++) {
+            var slot = document.createElement("div");
+            slot.className = "slot" + (i < entry.length ? " filled" : i === entry.length ? " next" : "");
+            slot.textContent = i < entry.length ? "●" : i + 1;
+            slots.appendChild(slot);
+        }
+        document.getElementById("btn-unlock").classList.toggle("active", mode === "unlock");
+        document.getElementById("btn-setup").classList.toggle("active", mode !== "unlock");
+    }
+
+    // One picked place on the globe: a pin standing on the exact spot, with its
+    // number (or a bare line when SHOW NUMBERS is off). Only pins, no markers.
+    function drawPlace(p, index){
+        globe.addPin(p.lat, p.lon, document.getElementById("opt-labels").checked ? String(index + 1) : "");
+    }
+
+    function redrawPins(){
+        globe.setMaxPins(0);      // removes them all
+        globe.setMaxPins(LENGTH);
+        entry.forEach(drawPlace);
+    }
+
+    function prompt(){
+        if (mode === "unlock") {
+            write(saved() ? "encom-os12: pick your " + LENGTH + " places to unlock" : "encom-os12: no sequence yet, use SET NEW SEQUENCE", "dim");
+        } else if (mode === "setup") {
+            write("encom-os12: pick " + LENGTH + " places for the new sequence", "dim");
+        } else {
+            write("encom-os12: pick the same " + LENGTH + " places again to confirm", "dim");
+        }
+    }
+
+    function resetEntry(){
+        entry = [];
+        startedAt = null;
+        redrawPins();
+        renderSlots();
+    }
+
+    /* input */
+
+    function pick(p){
+        if (entry.length >= LENGTH) {
+            return;
+        }
+        if (mode === "unlock" && !saved()) {
+            prompt();
+            return;
+        }
+        if (startedAt === null) {
+            startedAt = performance.now();
+        }
+        p.t = performance.now() - startedAt;
+        entry.push(p);
+        drawPlace(p, entry.length - 1);
+        renderSlots();
+        if (entry.length === LENGTH) {
+            setTimeout(finish, 400);   // let the last marker land first
+        }
+    }
+
+    function finish(){
+        var seconds = (entry[entry.length - 1].t / 1000).toFixed(1),
+            stats = document.getElementById("opt-stats").checked;
+
+        if (mode === "setup") {
+            firstSetup = entry.slice();
+            mode = "confirm";
+            write("first entry recorded (" + seconds + " s)");
+            resetEntry();
+            prompt();
+            return;
+        }
+
+        var reference = mode === "confirm" ? firstSetup : saved().points,
+            errors = entry.map(function(p, i){ return angle(p, reference[i]); }),
+            ok = errors.every(function(e){ return e <= tolerance(); });
+
+        if (stats) {
+            write("time " + seconds + " s · error per place (km): " +
+                  errors.map(function(e){ return Math.round(e * KM_PER_DEGREE); }).join(" "));
+        }
+
+        if (mode === "confirm") {
+            if (ok) {
+                save(entry.map(function(p, i){ return midpoint(p, firstSetup[i]); }));
+                write("SEQUENCE SAVED. Now try UNLOCK.", "granted");
+                mode = "unlock";
+            } else {
+                write("the two entries don't match; start again", "denied");
+                mode = "setup";
+            }
+            firstSetup = mode === "setup" ? null : firstSetup;
+        } else {
+            attempts++;
+            if (ok) {
+                write("ACCESS GRANTED. Welcome back (attempt " + attempts + ")", "granted");
+                attempts = 0;
+            } else {
+                write("ACCESS DENIED. Sequence incorrect", "denied");
+            }
+        }
+        setTimeout(function(){
+            resetEntry();
+            prompt();
+        }, ok ? 1500 : 1000);
+    }
+
+    function undo(){
+        if (!entry.length) {
+            return;
+        }
+        entry.pop();
+        if (!entry.length) {
+            startedAt = null;
+        }
+        redrawPins();
+        renderSlots();
+    }
+
+    // a click picks a place; a drag only turns the globe
+    var down = null;
+    globe.domElement.addEventListener("pointerdown", function(e){
+        down = { x: e.clientX, y: e.clientY, time: performance.now() };
+    });
+    globe.domElement.addEventListener("pointermove", function(e){
+        if (down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) {
+            globe.domElement.classList.add("dragging");
+        }
+    });
+    globe.domElement.addEventListener("pointerup", function(e){
+        globe.domElement.classList.remove("dragging");
+        if (!down) {
+            return;
+        }
+        var moved = Math.hypot(e.clientX - down.x, e.clientY - down.y),
+            quick = performance.now() - down.time < 500;
+        down = null;
+        if (moved <= 6 && quick) {
+            var p = globe.pickLatLon(e.clientX, e.clientY);
+            if (p) {
+                pick(p);
+            }
+        }
+    });
+
+    document.addEventListener("keydown", function(e){
+        if (e.key === "Backspace") {
+            undo();
+        } else if (e.key === "Escape") {
+            resetEntry();
+        }
+    });
+
+    document.getElementById("btn-unlock").onclick = function(){
+        mode = "unlock";
+        resetEntry();
+        prompt();
+    };
+    document.getElementById("btn-setup").onclick = function(){
+        mode = "setup";
+        firstSetup = null;
+        resetEntry();
+        prompt();
+    };
+    document.getElementById("btn-undo").onclick = undo;
+    document.getElementById("btn-clear").onclick = resetEntry;
+
+    document.getElementById("tolerance").oninput = function(){
+        document.getElementById("tol-value").textContent =
+            this.value + "° (~" + Math.round(this.value * KM_PER_DEGREE) + " km)";
+    };
+    document.getElementById("tolerance").oninput.call(document.getElementById("tolerance"));
+    document.getElementById("opt-labels").onchange = redrawPins;
+    document.getElementById("opt-rotate").onchange = function(){
+        globe.dayLength = this.checked ? 60000 : 1e12;
+    };
+
+    globe.init(function(){
+        (function animate(){
+            globe.tick();
+            requestAnimationFrame(animate);
+        })();
+        renderSlots();
+        if (!saved()) {
+            mode = "setup";
+            renderSlots();
+        }
+        prompt();
+    });
+
+    window.addEventListener("resize", function(){
+        globe.resize(window.innerWidth, window.innerHeight);
+    });
+</script>
+</body>
+</html>

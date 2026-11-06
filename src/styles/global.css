@@ -41,6 +41,23 @@ body {
   body { overflow: hidden; }
 }
 
+/* Globe fades in when ParticleGlobe reports ready (globe.js adds .globe-ready) */
+#globe-bg {
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+#globe-bg.globe-ready {
+  opacity: 1;
+}
+
+/* Desktop anchor links scroll the right column, not the window */
+#desktop-scroll {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  #desktop-scroll { scroll-behavior: auto; }
+}
+
 /* Scrollbar hiding */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

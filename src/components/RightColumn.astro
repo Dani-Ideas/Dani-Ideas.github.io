@@ -5,10 +5,17 @@ import Projects from './sections/Projects.astro';
 import Education from './sections/Education.astro';
 import Skills from './sections/Skills.astro';
 ---
-<main class="hidden lg:block w-[52%] h-full overflow-y-auto no-scrollbar py-24 space-y-7">
-  <About />
-  <Experience />
-  <Projects />
-  <Education />
-  <Skills />
+<!--
+  Desktop copy of the sections. The mobile layout in index.astro renders the same
+  components, so both are always in the DOM — the "d-" prefix keeps the ids unique
+  so that #d-about etc. resolve to THIS (visible on desktop) copy instead of the
+  display:none mobile one.
+-->
+<main id="desktop-scroll"
+      class="hidden lg:block w-[52%] h-full overflow-y-auto no-scrollbar py-24 space-y-7">
+  <About      prefix="d-" />
+  <Experience prefix="d-" />
+  <Projects   prefix="d-" />
+  <Education  prefix="d-" />
+  <Skills     prefix="d-" />
 </main>

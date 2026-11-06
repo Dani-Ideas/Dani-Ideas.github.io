@@ -1,7 +1,9 @@
 ---
 import { education } from '../../data/portfolio';
+export interface Props { prefix?: string }
+const { prefix = '' } = Astro.props;
 ---
-<section data-section="education" id="education" class="glass-panel scroll-mt-24">
+<section data-section="education" id={prefix + 'education'} class="glass-panel scroll-mt-24">
   <div class="mb-5">
     <h2 class="text-2xl font-semibold text-[var(--color-text-primary)]"
         data-es="Educación" data-en="Education">Educación</h2>

@@ -14,8 +14,10 @@
       el.textContent = l === 'es' ? el.dataset.es : el.dataset.en;
     });
 
-    var aboutEl = document.getElementById('about-text');
-    if (aboutEl) aboutEl.innerHTML = aboutHTML[l];
+    /* Both layouts (mobile + desktop) are in the DOM, so translate every copy. */
+    document.querySelectorAll('[data-about-text]').forEach(function (el) {
+      el.innerHTML = aboutHTML[l];
+    });
 
     var btn = document.getElementById('lang-btn');
     if (btn) {

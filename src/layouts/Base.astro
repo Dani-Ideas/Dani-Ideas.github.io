@@ -60,9 +60,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 <body>
   <slot />
 
-  <!-- Globe scripts — load order is critical: grid → encom-globe → init -->
-  <script is:inline src="/assets/grid.js"></script>
-  <script is:inline src="/assets/encom-globe.min.js"></script>
+  <!-- Particle globe. globe.js injects its own heavy assets after window.load,
+       so the ~1.18 MB of grid + bundle never blocks first paint. -->
   <script is:inline src="/scripts/globe.js"></script>
   <script is:inline src="/scripts/lang-toggle.js"></script>
   <script is:inline src="/scripts/scroll-animations.js"></script>

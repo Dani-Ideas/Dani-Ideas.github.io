@@ -39,7 +39,7 @@ import SocialLinks from './SocialLinks.astro';
     <!-- Desktop nav -->
     <nav aria-label="Secciones del portfolio" class="flex flex-col gap-1 mt-4">
       {nav.map(item => (
-        <a href={item.href} class="nav-link flex items-center py-2 text-sm font-medium text-[var(--color-text-secondary)] transition-colors group">
+        <a href={`#d-${item.href.slice(1)}`} class="nav-link flex items-center py-2 text-sm font-medium text-[var(--color-text-secondary)] transition-colors group">
           <span class="nav-indicator"></span>
           <span data-es={item.label.es} data-en={item.label.en}>{item.label.es}</span>
         </a>
